@@ -14,6 +14,11 @@ import random
 NOM_MONSTRES = ["Gobelin", "Loup", "Dragon"]
 DAYS_UNTIL_BOSS = 10
 HERO_MAX_HEALTH = 20
+BOSS_HEALTH = 30
+BOSS_DMG = 10
+
+
+
 
 day = 0
 number_of_times_ran_away = 0
@@ -53,8 +58,7 @@ class Heros():
             damage = 0
         self.health -= damage
         print(f"Vous avez pris {damage} points de dégats !")
-        if self.health <= 0:
-            print("Vous êtes mort !")
+
            
     def dont_fight(self):
         """
@@ -78,7 +82,22 @@ class Monster():
         """
         Fonction qui permet au monstre d'attaquer le heros
         """
-        hero.take_damage(self.damage + random.randint(-2, 2))
+        if self.name == "Sorcière":
+            if self.health < 10:
+                move_choice = random.randint(1, 2)
+                if move_choice == 1:
+                    print(f"{self.name} utilise sa magie pour se soigner !")
+                    self.health += random.randint(5, 10)
+                    return False
+                else:
+                    hero.take_damage(self.damage + random.randint(-2, 2))
+                    return True
+            else:
+                hero.take_damage(self.damage + random.randint(-2, 2))
+                return True
+        else:
+            hero.take_damage(self.damage + random.randint(-2, 2))
+            return True
     def take_damage(self, damage):
         """
         Fonction qui permet au monstre de prendre des dégats
@@ -125,12 +144,14 @@ while playing:
     while loop:
         day += 1
         print(f"--------------------------------- Jour {day} : ---------------------------------")
-        heal = random.randint(3, 7)
-        print(f"Vous récupérez {heal} points de vie avec un bon nuit de sommeil !")
-        hero.health += heal
+
+        heal = random.randint(-1, 5)
+        if heal > 0 and not day == 1:
+            print(f"Vous récupérez {heal} points de vie avec un bon nuit de sommeil !")
+            hero.health += heal
         if hero.health > HERO_MAX_HEALTH:
             hero.health = HERO_MAX_HEALTH
-
+        print(f"Vous avez {hero.health} points de vie .")
         if not day == DAYS_UNTIL_BOSS:
             current_monster = Monster(random.randint(5, 15), random.randint(1, 5), random.choice(NOM_MONSTRES))
             while current_monster.health > 0 and hero.health > 0:
@@ -154,7 +175,7 @@ while playing:
             print("Un Sorcière est apparu ! C'est le boss final !")
             if number_of_times_ran_away >= 5:
                 print(f"Sorcière : 'Vous avez fui de mes monstres {number_of_times_ran_away} fois. Bonne chance...'")
-            current_monster = Monster(50, 10, "Sorcière")
+            current_monster = Monster(BOSS_HEALTH, BOSS_DMG, "Sorcière")
             while current_monster.health > 0 and hero.health > 0:
                 combat(hero, current_monster)
             if hero.health <= 0:
@@ -164,6 +185,7 @@ while playing:
                 print("Vous avez vaincu le boss final ! Vous avez gagné !")
                 loop = False
                 break
+    choice = 0
     while choice != 1 and choice != 2:
         try:
             choice : int = input(f"Voulez-vous rejouer ? (1) Oui (2) Non : ")
