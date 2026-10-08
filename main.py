@@ -161,7 +161,7 @@ playing = True
 while playing:
     setup()
     loop = True
-    voir_regles = input("Voulez-vous voir les règles du jeu ? (1) Oui (2) Non : ")
+    voir_regles = input("Voulez-vous voir les règles du jeu ? (1) Oui (2) Non : ")    # Règles du jeu
     if voir_regles == "1":
         print("\n\n\n")
         print("Vous êtes un héros qui doit combattre des monstres pour survivre.")
@@ -177,14 +177,14 @@ while playing:
         print(f"--------------------------------- Jour {day} : ---------------------------------")
 
         heal = random.randint(-1, 5)
-        if heal > 0 and not day == 1:
+        if heal > 0 and not day == 1:     # Le héros récupère des points de vie chaque jour sauf le premier
             print(f"Vous récupérez {heal} points de vie avec un bon nuit de sommeil !")
             hero.health += heal
-        if hero.health > HERO_MAX_HEALTH:
-            hero.health = HERO_MAX_HEALTH
+        if hero.health > HERO_MAX_HEALTH:   
+            hero.health = HERO_MAX_HEALTH   # Prévenir que la vie du héros dépasse 20
         print(f"Vous avez {hero.health} points de vie .")
         if not day == DAYS_UNTIL_BOSS:
-            current_monster = créer_monstre()
+            current_monster = créer_monstre() # Créer un monstre aléatoire
             while current_monster.health > 0 and hero.health > 0:
                 try:
                     choice : int = input(f"Un {current_monster.name} est apparu ! Que voulez-vous faire ? (1) Combattre (2) Fuir (3) Afficher l'état : ")
@@ -196,11 +196,11 @@ while playing:
                     while hero.health > 0 and current_monster.health > 0: 
                         combat(hero, current_monster)
                     if not hero.is_alive():
-                       loop = False
+                       loop = False # Joueur est mort :(
                        break
 
                 if choice == 2:
-                    hero.dont_fight()
+                    hero.dont_fight() # Joueur fuit le combat
                     break
                 if choice == 3:
                     hero.afficher_etat()    
@@ -212,7 +212,7 @@ while playing:
             while current_monster.health > 0 and hero.health > 0:
                 combat(hero, current_monster)
             if not hero.is_alive():
-                loop = False
+                loop = False # Joueur est mort :(
                 break
             else:
                 print("Vous avez vaincu le boss final ! Vous avez gagné !")
