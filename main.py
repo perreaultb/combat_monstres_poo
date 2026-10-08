@@ -67,7 +67,19 @@ class Heros():
         global number_of_times_ran_away
         number_of_times_ran_away += 1
         print(f"Vous vous êtes enfui du combat !")
+    
 
+    def is_alive(self):
+        """
+        Fonction qui permet de savoir si le heros est vivant
+        """
+        return self.health > 0
+
+    def afficher_etat(self):
+        """
+        Fonction qui permet d'afficher l'état du heros
+        """
+        print(f"Vous avez {self.health} points de vie et {self.damage_mod} puissance !")
 
 
 class Monster():
@@ -108,6 +120,14 @@ class Monster():
             print(f"{self.name} est mort !")
         
 
+def créer_monstre():
+    """
+    Fonction qui permet de créer un monstre aléatoire
+    """
+    health = random.randint(5, 15)
+    damage = random.randint(1, 5)
+    name = random.choice(NOM_MONSTRES)
+    return Monster(health, damage, name)
 
 # functions
 
@@ -141,6 +161,17 @@ playing = True
 while playing:
     setup()
     loop = True
+    voir_regles = input("Voulez-vous voir les règles du jeu ? (1) Oui (2) Non : ")
+    if voir_regles == "1":
+        print("\n\n\n")
+        print("Vous êtes un héros qui doit combattre des monstres pour survivre.")
+        print("Chaque jour, vous pouvez rencontrer un monstre aléatoire.")
+        print("Vous pouvez choisir de combattre le monstre, de fuir ou d'afficher votre état.")
+        print("Si vous choisissez de combattre, vous et le monstre vous infligez des dégâts jusqu'à ce que l'un de vous soit mort.")
+        print("Si vous fuyez, vous perdez des points de vie.")
+        print("Après 10 jours, vous affronterez le boss final, la Sorcière. Bonne chance !")
+        input("Appuyez sur Entrée pour continuer...")
+        print("\n\n\n")
     while loop:
         day += 1
         print(f"--------------------------------- Jour {day} : ---------------------------------")
@@ -153,10 +184,10 @@ while playing:
             hero.health = HERO_MAX_HEALTH
         print(f"Vous avez {hero.health} points de vie .")
         if not day == DAYS_UNTIL_BOSS:
-            current_monster = Monster(random.randint(5, 15), random.randint(1, 5), random.choice(NOM_MONSTRES))
+            current_monster = créer_monstre()
             while current_monster.health > 0 and hero.health > 0:
                 try:
-                    choice : int = input(f"Un {current_monster.name} est apparu ! Que voulez-vous faire ? (1) Combattre (2) Fuir : ")
+                    choice : int = input(f"Un {current_monster.name} est apparu ! Que voulez-vous faire ? (1) Combattre (2) Fuir (3) Afficher l'état : ")
                     choice = int(choice)
                 except ValueError:
                     print("Entrée invalide !")
@@ -164,13 +195,15 @@ while playing:
                 if choice == 1:
                     while hero.health > 0 and current_monster.health > 0: 
                         combat(hero, current_monster)
-                    if hero.health <= 0:
+                    if not hero.is_alive():
                        loop = False
                        break
 
                 if choice == 2:
                     hero.dont_fight()
                     break
+                if choice == 3:
+                    hero.afficher_etat()    
         else:
             print("Un Sorcière est apparu ! C'est le boss final !")
             if number_of_times_ran_away >= 5:
@@ -178,7 +211,7 @@ while playing:
             current_monster = Monster(BOSS_HEALTH, BOSS_DMG, "Sorcière")
             while current_monster.health > 0 and hero.health > 0:
                 combat(hero, current_monster)
-            if hero.health <= 0:
+            if not hero.is_alive():
                 loop = False
                 break
             else:
