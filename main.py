@@ -1,6 +1,7 @@
 """
-Auteur : 
-gROUPE
+Jeu de combat des monstres en utilisant des classes
+Auteur : Bradley Perreault
+Groupe: 4567 (405)
 """
 import random
 
