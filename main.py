@@ -1,9 +1,9 @@
-# imports
-
+"""
+Auteur : 
+gROUPE
+"""
 import random
 
-
-# variables
 
 NOM_MONSTRES = ["Gobelin", "Loup", "Dragon"]
 DAYS_UNTIL_BOSS = 10
@@ -12,15 +12,11 @@ BOSS_HEALTH = 30
 BOSS_DMG = 10
 
 
-
-
 day = 0
 number_of_times_ran_away = 0
 hero = None
 current_monster = None
 
-
-# classes
 
 class Heros():
     """
@@ -29,21 +25,19 @@ class Heros():
     def __init__(self, health):
         self.health = health
         self.damage_mod = 1
-        
 
-    
     def attack(self, monster):
         """
         Fonction qui permet au heros d'attaquer un monstre
         """
-        damage = random.randint(1 + self.damage_mod, 5 + self.damage_mod) 
+        damage = random.randint(1 + self.damage_mod, 5 + self.damage_mod)
         monster.health -= damage
         print(f"Vous avez infligé {damage} points de dégats à {monster.name} !")
         if monster.health <= 0:
             print(f"Vous avez tué {monster.name} !")
             self.damage_mod += random.randint(0, 3)
             print("Vous vous sentez plus fort !")
-            
+
     def take_damage(self, damage):
         """
         Fonction qui permet au heros de prendre des dégats
@@ -53,15 +47,13 @@ class Heros():
         self.health -= damage
         print(f"Vous avez pris {damage} points de dégats !")
 
-           
     def dont_fight(self):
         """
         Fonction qui permet au heros de ne pas combattre un monstre
         """
         global number_of_times_ran_away
         number_of_times_ran_away += 1
-        print(f"Vous vous êtes enfui du combat !")
-    
+        print("Vous vous êtes enfui du combat !")
 
     def is_alive(self):
         """
@@ -84,7 +76,8 @@ class Monster():
         self.health = health
         self.damage = damage
         self.name = name
-    def attack(self, hero):
+
+    def attack(self, _hero):
         """
         Fonction qui permet au monstre d'attaquer le heros
         """
@@ -96,14 +89,15 @@ class Monster():
                     self.health += random.randint(5, 10)
                     return False
                 else:
-                    hero.take_damage(self.damage + random.randint(-2, 2))
+                    _hero.take_damage(self.damage + random.randint(-2, 2))
                     return True
             else:
-                hero.take_damage(self.damage + random.randint(-2, 2))
+                _hero.take_damage(self.damage + random.randint(-2, 2))
                 return True
         else:
-            hero.take_damage(self.damage + random.randint(-2, 2))
+            _hero.take_damage(self.damage + random.randint(-2, 2))
             return True
+
     def take_damage(self, damage):
         """
         Fonction qui permet au monstre de prendre des dégats
@@ -112,9 +106,9 @@ class Monster():
         print(f"{self.name} a pris {damage} points de dégats !")
         if self.health <= 0:
             print(f"{self.name} est mort !")
-        
 
-def créer_monstre():
+
+def creer_monstre():
     """
     Fonction qui permet de créer un monstre aléatoire
     """
@@ -122,8 +116,6 @@ def créer_monstre():
     damage = random.randint(1, 5)
     name = random.choice(NOM_MONSTRES)
     return Monster(health, damage, name)
-
-# functions
 
 
 def setup():
@@ -136,18 +128,17 @@ def setup():
     current_monster = None
     hero = Heros(20)
 
-def combat(hero, monster):
+
+def combat(_hero, monster):
     """
     Fonction qui permet de gérer le combat entre le heros et le monstre
     """
-    while monster.health > 0 and hero.health > 0:
-        hero.attack(monster)
+    while monster.health > 0 and _hero.health > 0:
+        _hero.attack(monster)
         if monster.health > 0:
-            monster.attack(hero)
-    if hero.health <= 0:
+            monster.attack(_hero)
+    if _hero.health <= 0:
         print("Vous êtes mort !")
-    return
-
 
 
 playing = True
@@ -155,7 +146,7 @@ playing = True
 while playing:
     setup()
     loop = True
-    voir_regles = input("Voulez-vous voir les règles du jeu ? (1) Oui (2) Non : ")    
+    voir_regles = input("Voulez-vous voir les règles du jeu ? (1) Oui (2) Non : ")
     if voir_regles == "1":
         print("\n\n\n")
         print("Vous êtes un héros qui doit combattre des monstres pour survivre.")
@@ -171,14 +162,14 @@ while playing:
         print(f"--------------------------------- Jour {day} : ---------------------------------")
 
         heal = random.randint(-1, 5)
-        if heal > 0 and not day == 1:     
+        if heal > 0 and not day == 1:
             print(f"Vous récupérez {heal} points de vie avec un bon nuit de sommeil !")
             hero.health += heal
-        if hero.health > HERO_MAX_HEALTH:   
-            hero.health = HERO_MAX_HEALTH   
+        if hero.health > HERO_MAX_HEALTH:
+            hero.health = HERO_MAX_HEALTH
         print(f"Vous avez {hero.health} points de vie .")
         if not day == DAYS_UNTIL_BOSS:
-            current_monster = créer_monstre() 
+            current_monster = creer_monstre()
             while current_monster.health > 0 and hero.health > 0:
                 try:
                     choice : int = input(f"Un {current_monster.name} est apparu ! Que voulez-vous faire ? (1) Combattre (2) Fuir (3) Afficher l'état : ")
@@ -187,17 +178,17 @@ while playing:
                     print("Entrée invalide !")
                     continue
                 if choice == 1:
-                    while hero.health > 0 and current_monster.health > 0: 
+                    while hero.health > 0 and current_monster.health > 0:
                         combat(hero, current_monster)
                     if not hero.is_alive():
-                       loop = False 
-                       break
+                        loop = False
+                        break
 
                 if choice == 2:
-                    hero.dont_fight() 
+                    hero.dont_fight()
                     break
                 if choice == 3:
-                    hero.afficher_etat()    
+                    hero.afficher_etat()
         else:
             print("Un Sorcière est apparu ! C'est le boss final !")
             if number_of_times_ran_away >= 5:
@@ -213,9 +204,9 @@ while playing:
                 loop = False
                 break
     choice = 0
-    while choice != 1 and choice != 2:
+    while choice in (1, 2):
         try:
-            choice : int = input(f"Voulez-vous rejouer ? (1) Oui (2) Non : ")
+            choice : int = input("Voulez-vous rejouer ? (1) Oui (2) Non : ")
             choice = int(choice)
         except ValueError:
             print("Entrée invalide !")
